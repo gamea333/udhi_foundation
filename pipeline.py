@@ -50,6 +50,8 @@ Return ONE self-contained animated SVG. Rules:
 - Include at least one animation (SMIL <animate>/<animateTransform>, or CSS @keyframes
   inside a <style> element) that helps explain the concept.
 - No <script>, no external images or fonts.
+- It must be strict, valid XML: write & as &amp; everywhere (even in comments),
+  and wrap the contents of any <style> element in <![CDATA[ ... ]]>.
 - Plain white background, clear readable font-size (at least 14).
 
 Return ONLY the SVG code, no explanation, no markdown fences."""
