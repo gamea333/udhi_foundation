@@ -1,0 +1,61 @@
+
+=== 1. Pythagoras' theorem ===
+  gemini-3.5-flash-lite: API 503 on attempt 1, waiting 5s
+  gemini-3.5-flash-lite: API 503 on attempt 2, waiting 10s
+  gemini-3.5-flash-lite: API 503 3 times, giving up on this model
+  Checks failed, retrying:
+  - in_viewbox: Drawn outside viewBox 0 0 600 400: <rect> has point (340, 420)
+  gemini-3.5-flash-lite: API 503 on attempt 1, waiting 5s
+  gemini-3.5-flash-lite: API 503 on attempt 2, waiting 10s
+  gemini-3.5-flash-lite: API 503 3 times, giving up on this model
+  model=gemini-3.5-flash  in=2429  out=5095  cost=$0.013466  retries=1  api_retries=6
+  [FAIL] valid: SVG is not valid XML: not well-formed (invalid token): line 16, column 25
+  [FAIL] in_viewbox: Skipped: SVG did not parse
+  [FAIL] title_and_labels: Skipped: SVG did not parse
+  [FAIL] animation: Skipped: SVG did not parse
+  [FAIL] key_terms: Skipped: SVG did not parse
+
+=== 2. Parts of a circle ===
+  gemini-3.5-flash-lite: API 503 on attempt 1, waiting 5s
+  gemini-3.5-flash-lite: API 503 on attempt 2, waiting 10s
+  gemini-3.5-flash-lite: API 503 3 times, giving up on this model
+  model=gemini-3.5-flash  in=277  out=1887  cost=$0.004801  retries=0  api_retries=3
+  [PASS] valid: Parsed OK
+  [PASS] in_viewbox: All checked shapes inside viewBox 0 0 600 400
+  [PASS] title_and_labels: Title present, 12 text labels
+  [PASS] animation: Animation found (CSS)
+  [PASS] key_terms: All key terms labelled: centre, radius, diameter, circumference
+
+=== 3. Series circuit ===
+  gemini-3.5-flash-lite: API 503 on attempt 1, waiting 5s
+  gemini-3.5-flash-lite: API 503 on attempt 2, waiting 10s
+  gemini-3.5-flash-lite: API 503 3 times, giving up on this model
+  model=gemini-3.5-flash  in=262  out=2410  cost=$0.006104  retries=0  api_retries=3
+  [PASS] valid: Parsed OK
+  [PASS] in_viewbox: All checked shapes inside viewBox 0 0 600 400
+  [PASS] title_and_labels: Title present, 16 text labels
+  [PASS] animation: Animation found (CSS)
+  [PASS] key_terms: All key terms labelled: cell, current, voltage
+
+=== 4. Photosynthesis ===
+  gemini-3.5-flash-lite: API 503 on attempt 1, waiting 5s
+  gemini-3.5-flash-lite: API 503 on attempt 2, waiting 10s
+  model=gemini-3.5-flash-lite  in=261  out=2104  cost=$0.000868  retries=0  api_retries=2
+  [PASS] valid: Parsed OK
+  [PASS] in_viewbox: All checked shapes inside viewBox 0 0 600 400
+  [PASS] title_and_labels: Title present, 8 text labels
+  [PASS] animation: Animation found (SMIL + CSS)
+  [PASS] key_terms: All key terms labelled: carbon dioxide, water, light, chlorophyll, glucose, oxygen
+
+=== 5. States of matter ===
+  gemini-3.5-flash-lite: API 503 on attempt 1, waiting 5s
+  gemini-3.5-flash-lite: API 503 on attempt 2, waiting 10s
+  gemini-3.5-flash-lite: API 503 3 times, giving up on this model
+  model=gemini-3.5-flash  in=268  out=3744  cost=$0.009440  retries=0  api_retries=3
+  [PASS] valid: Parsed OK
+  [PASS] in_viewbox: All checked shapes inside viewBox 0 0 600 400
+  [PASS] title_and_labels: Title present, 11 text labels
+  [PASS] animation: Animation found (CSS)
+  [PASS] key_terms: All key terms labelled: solid, liquid, gas
+
+Saved 5 results to results.json
