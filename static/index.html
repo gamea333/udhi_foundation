@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Science Diagram Maker</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; background: #f6f7f9; color: #1a1d23; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .sub { color: #5b6270; margin: 0 0 20px; font-size: 14px; }
+  .wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 1000px; background: #fff; }
+  th, td { border: 1px solid #dde1e7; padding: 10px; vertical-align: top; font-size: 14px; text-align: left; }
+  th { background: #eef1f5; }
+  iframe { width: 300px; height: 200px; border: 1px solid #dde1e7; background: #fff; }
+  .checks div { white-space: nowrap; cursor: help; }
+  .pass { color: #137333; } .fail { color: #c5221f; }
+  .status { font-weight: 600; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+  .status.approved { background: #e6f4ea; color: #137333; }
+  .status.rejected { background: #fce8e6; color: #c5221f; }
+  .status.none { background: #eef1f5; color: #5b6270; }
+  textarea { width: 180px; height: 56px; font: inherit; font-size: 13px; }
+  button { font: inherit; font-size: 13px; padding: 5px 10px; margin: 4px 4px 0 0; cursor: pointer; border-radius: 4px; border: 1px solid #b9bfc9; background: #fff; }
+  button.approve { border-color: #137333; color: #137333; }
+  button.reject { border-color: #c5221f; color: #c5221f; }
+  button:disabled { opacity: .5; cursor: wait; }
+  .error { background: #fce8e6; color: #a50e0e; border: 1px solid #f4b6b0; padding: 8px; margin-top: 6px; border-radius: 4px; font-size: 13px; max-width: 300px; }
+  .muted { color: #5b6270; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>Science Diagram Maker</h1>
+<p class="sub">AI-generated GCSE diagrams, checked in code. Hover a check to see why it passed or failed.
+Review decisions are saved in this browser (localStorage).</p>
+<div id="top-error"></div>
+<div class="wrap">
+<table>
+  <thead><tr>
+    <th>Concept</th><th>Diagram</th><th>Checks</th><th>Cost &amp; retries</th><th>Review</th>
+  </tr></thead>
+  <tbody id="rows"><tr><td colspan="5">Loading saved results…</td></tr></tbody>
+</table>
+</div>
+
+<script>
+const CHECK_LABELS = {
+  valid: "Valid SVG", in_viewbox: "Inside viewBox", title_and_labels: "Title + 3 labels",
+  animation: "Animated", key_terms: "Key terms (own)"
+};
+
+// ----- review persistence (localStorage) -----
+const reviewKey = id => `review-${id}`;
+function loadReview(id) {
+  try { return JSON.parse(localStorage.getItem(reviewKey(id))) || {}; } catch { return {}; }
+}
+function saveReview(id, review) {
+  try { localStorage.setItem(reviewKey(id), JSON.stringify(review)); } catch {}
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function renderRow(r) {
+  const review = loadReview(r.id);
+  const status = review.decision || "none";
+  const checks = Object.entries(r.checks).map(([k, c]) =>
+    `<div class="${c.passed ? "pass" : "fail"}" title="${esc(c.reason)}">${c.passed ? "✅" : "❌"} ${CHECK_LABELS[k] || k}</div>`
+  ).join("");
+  const tr = document.createElement("tr");
+  tr.id = `row-${r.id}`;
+  tr.innerHTML = `
+    <td><strong>${esc(r.concept)}</strong><br><span class="muted">${esc(r.subject)}</span><br>
+      <span class="muted">${esc(r.model)}<br>${esc(r.generated_at || "")}</span><br>
+      <button class="gen">Generate</button><div class="gen-msg"></div></td>
+    <td><iframe sandbox title="${esc(r.concept)} diagram"></iframe></td>
+    <td class="checks">${checks}<div class="muted" style="margin-top:6px">${r.passed ? "All passed" : "Some failed"}</div></td>
+    <td>$${r.cost_usd.toFixed(6)}<br>
+      <span class="muted">${r.input_tokens} in / ${r.output_tokens} out</span><br>
+      Retries: ${r.retries}<br><span class="muted">API retries: ${r.api_retries}</span></td>
+    <td><span class="status ${status}">${status === "none" ? "Not reviewed" : status}</span><br>
+      <textarea placeholder="Note…">${esc(review.note || "")}</textarea><br>
+      <button class="approve">Approve</button><button class="reject">Reject</button></td>`;
+
+  // srcdoc in a sandboxed iframe: each diagram's CSS is isolated and scripts can't run
+  tr.querySelector("iframe").srcdoc =
+    `<!doctype html><style>html,body{margin:0;height:100%}svg{width:100%;height:100%}</style>${r.svg}`;
+
+  const note = tr.querySelector("textarea");
+  const decide = decision => {
+    saveReview(r.id, { decision, note: note.value, at: new Date().toISOString() });
+    tr.replaceWith(renderRow(r));
+  };
+  tr.querySelector(".approve").onclick = () => decide("approved");
+  tr.querySelector(".reject").onclick = () => decide("rejected");
+  note.oninput = () => saveReview(r.id, { ...loadReview(r.id), note: note.value });
+
+  tr.querySelector(".gen").onclick = async e => {
+    const btn = e.target, msg = tr.querySelector(".gen-msg");
+    btn.disabled = true; btn.textContent = "Generating… (up to 1 min)"; msg.innerHTML = "";
+    try {
+      const res = await fetch(`/api/generate/${r.id}`, { method: "POST" });
+      const data = await res.json().catch(() => ({ error: `Server returned ${res.status}` }));
+      if (!res.ok || data.error) throw new Error(data.error || `Server returned ${res.status}`);
+      tr.replaceWith(renderRow(data));
+    } catch (err) {
+      msg.innerHTML = `<div class="error">Generation failed: ${esc(err.message)}<br>The saved diagram is unchanged.</div>`;
+      btn.disabled = false; btn.textContent = "Generate";
+    }
+  };
+  return tr;
+}
+
+async function load() {
+  const tbody = document.getElementById("rows");
+  try {
+    const res = await fetch("/api/results");
+    const results = await res.json();
+    tbody.innerHTML = "";
+    if (!results.length) tbody.innerHTML = `<tr><td colspan="5">No saved results yet. Run generate.py.</td></tr>`;
+    results.forEach(r => tbody.appendChild(renderRow(r)));
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="error">Could not load results: ${esc(err.message)}</div></td></tr>`;
+  }
+}
+load();
+</script>
+</body>
+</html>
