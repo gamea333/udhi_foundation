@@ -25,6 +25,10 @@
       "key_terms": {
         "passed": true,
         "reason": "All key terms labelled: hypotenuse, a, b, c"
+      },
+      "no_overlap": {
+        "passed": true,
+        "reason": "No overlapping labels (12 checked)"
       }
     },
     "passed": true,
@@ -68,6 +72,10 @@
       "key_terms": {
         "passed": true,
         "reason": "All key terms labelled: centre, radius, diameter, circumference"
+      },
+      "no_overlap": {
+        "passed": true,
+        "reason": "No overlapping labels (12 checked)"
       }
     },
     "passed": true,
@@ -88,7 +96,7 @@
     "concept": "Series circuit",
     "subject": "Physics",
     "model": "gemini-3.5-flash",
-    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 400\">\n  <title>Series Circuit - UK GCSE Physics</title>\n  \n  <style>\n    .bg { fill: #ffffff; }\n    .title-text { font-family: system-ui, -apple-system, sans-serif; font-size: 20px; font-weight: bold; fill: #1e293b; text-anchor: middle; }\n    .subtitle-text { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; fill: #475569; text-anchor: middle; }\n    .label { font-family: system-ui, -apple-system, sans-serif; font-size: 15px; font-weight: 600; fill: #0f172a; text-anchor: middle; }\n    .sub-label { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; fill: #475569; text-anchor: middle; }\n    .wire { stroke: #334155; stroke-width: 4; fill: none; stroke-linejoin: round; stroke-linecap: round; }\n    .component-bg { fill: #ffffff; stroke: #334155; stroke-width: 3; }\n    .cell-line { stroke: #0f172a; stroke-width: 4; stroke-linecap: round; }\n    .cell-line-thin { stroke: #0f172a; stroke-width: 2; stroke-linecap: round; }\n    \n    /* Animation for current flow dots */\n    .electron { fill: #ef4444; }\n    \n    /* Current flow path animation using stroke-dashoffset */\n    .current-flow {\n      stroke: #ef4444;\n      stroke-width: 3;\n      fill: none;\n      stroke-dasharray: 8, 12;\n      animation: flow 2s linear infinite;\n    }\n    \n    @keyframes flow {\n      0% { stroke-dashoffset: 40; }\n      100% { stroke-dashoffset: 0; }\n    }\n\n    .voltmeter-line { stroke: #2563eb; stroke-width: 2; stroke-dasharray: 4,4; fill: none; }\n    .voltage-badge { fill: #eff6ff; stroke: #2563eb; stroke-width: 1.5; }\n    .voltage-text { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: bold; fill: #1d4ed8; text-anchor: middle; }\n  </style>\n\n  <!-- Background -->\n  <rect class=\"bg\" width=\"600\" height=\"400\" />\n\n  <!-- Title & Key Concept Text -->\n  <text x=\"300\" y=\"35\" class=\"title-text\">Series Circuit</text>\n  <text x=\"300\" y=\"58\" class=\"subtitle-text\">1 loop • Current is the same everywhere • Cell voltage is shared</text>\n\n  <!-- Main Circuit Wire Loop (Top Left 100,90 to Bottom Right 500,270) -->\n  <path class=\"wire\" d=\"M 300,90 L 500,90 L 500,270 L 100,270 L 100,90 Z\" />\n  \n  <!-- Animated Current Indicator Overlay -->\n  <path class=\"current-flow\" d=\"M 300,90 L 500,90 L 500,270 L 100,270 L 100,90 Z\" />\n\n  <!-- CELL (Top Center) -->\n  <rect x=\"260\" y=\"70\" width=\"80\" height=\"40\" fill=\"#ffffff\" />\n  <!-- Long positive line -->\n  <line x1=\"285\" y1=\"75\" x2=\"285\" y2=\"105\" class=\"cell-line\" />\n  <!-- Short negative line -->\n  <line x1=\"315\" y1=\"82\" x2=\"315\" y2=\"98\" class=\"cell-line-thin\" />\n  <!-- Cell Label -->\n  <text x=\"300\" y=\"60\" class=\"label\">cell</text>\n  <text x=\"275\" y=\"72\" class=\"sub-label\" font-weight=\"bold\">+</text>\n  <text x=\"325\" y=\"72\" class=\"sub-label\" font-weight=\"bold\">-</text>\n\n  <!-- BULB 1 (Bottom Left-ish) -->\n  <g id=\"bulb1\">\n    <circle cx=\"220\" cy=\"270\" r=\"20\" class=\"component-bg\" />\n    <line x1=\"206\" y1=\"256\" x2=\"234\" y2=\"284\" stroke=\"#334155\" stroke-width=\"2.5\" />\n    <line x1=\"206\" y1=\"284\" x2=\"234\" y2=\"256\" stroke=\"#334155\" stroke-width=\"2.5\" />\n    <text x=\"220\" y=\"310\" class=\"sub-label\">Lamp 1</text>\n  </g>\n\n  <!-- BULB 2 (Bottom Right-ish) -->\n  <g id=\"bulb2\">\n    <circle cx=\"380\" cy=\"270\" r=\"20\" class=\"component-bg\" />\n    <line x1=\"366\" y1=\"256\" x2=\"394\" y2=\"284\" stroke=\"#334155\" stroke-width=\"2.5\" />\n    <line x1=\"366\" y1=\"284\" x2=\"394\" y2=\"256\" stroke=\"#334155\" stroke-width=\"2.5\" />\n    <text x=\"380\" y=\"310\" class=\"sub-label\">Lamp 2</text>\n  </g>\n\n  <!-- VOLTAGE SECTION (Cell Voltage & Shared Voltage Labels) -->\n  <!-- Total Cell Voltage -->\n  <rect x=\"255\" y=\"118\" width=\"90\" height=\"22\" rx=\"4\" class=\"voltage-badge\" />\n  <text x=\"300\" y=\"133\" class=\"voltage-text\">voltage = 6V</text>\n\n  <!-- Shared Voltages across lamps -->\n  <path class=\"voltmeter-line\" d=\"M 190,270 L 190,340 L 250,340 L 250,270\" />\n  <rect x=\"195\" y=\"329\" width=\"50\" height=\"20\" rx=\"3\" fill=\"#eff6ff\" stroke=\"#2563eb\" stroke-width=\"1\" />\n  <text x=\"220\" y=\"343\" class=\"voltage-text\" font-size=\"11\">3V</text>\n\n  <path class=\"voltmeter-line\" d=\"M 350,270 L 350,340 L 410,340 L 410,270\" />\n  <rect x=\"355\" y=\"329\" width=\"50\" height=\"20\" rx=\"3\" fill=\"#eff6ff\" stroke=\"#2563eb\" stroke-width=\"1\" />\n  <text x=\"380\" y=\"343\" class=\"voltage-text\" font-size=\"11\">3V</text>\n\n  <!-- Main Voltage Concept Callout -->\n  <text x=\"300\" y=\"372\" class=\"label\" fill=\"#2563eb\">voltage is shared (6V = 3V + 3V)</text>\n\n  <!-- CURRENT LABELS & AMMETERS (Showing current is same everywhere) -->\n  <!-- Current Flow Label (Top Right) -->\n  <g transform=\"translate(430, 140)\">\n    <rect x=\"-50\" y=\"-14\" width=\"100\" height=\"26\" rx=\"13\" fill=\"#fee2e2\" stroke=\"#ef4444\" stroke-width=\"1.5\" />\n    <text x=\"0\" y=\"4\" class=\"label\" fill=\"#dc2626\" font-size=\"13\">current</text>\n  </g>\n  \n  <!-- Direction Arrow -->\n  <path d=\"M 500,175 L 500,185 L 495,180 Z\" fill=\"#ef4444\" />\n  <path d=\"M 100,185 L 100,175 L 105,180 Z\" fill=\"#ef4444\" />\n\n  <!-- Ammeter Left Side -->\n  <circle cx=\"100\" cy=\"180\" r=\"16\" class=\"component-bg\" />\n  <text x=\"100\" y=\"185\" class=\"label\" font-size=\"14\">A</text>\n  <text x=\"65\" y=\"184\" class=\"sub-label\" font-weight=\"bold\" fill=\"#dc2626\">1.5A</text>\n\n  <!-- Ammeter Right Side -->\n  <circle cx=\"500\" cy=\"180\" r=\"16\" class=\"component-bg\" />\n  <text x=\"500\" y=\"185\" class=\"label\" font-size=\"14\">A</text>\n  <text x=\"535\" y=\"184\" class=\"sub-label\" font-weight=\"bold\" fill=\"#dc2626\">1.5A</text>\n\n</svg>",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 400\">\n  <title>Series Circuit - UK GCSE Physics</title>\n  <style><![CDATA[\n    .bg { fill: #ffffff; }\n    .title-text { font-family: system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: bold; fill: #1e293b; }\n    .label-text { font-family: system-ui, -apple-system, sans-serif; font-size: 15px; font-weight: 600; fill: #0f172a; }\n    .sub-text { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; fill: #475569; }\n    .wire { stroke: #334155; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; }\n    .electron { fill: #0284c7; }\n    .cell-line { stroke: #0f172a; stroke-width: 4; stroke-linecap: round; }\n    .filament { stroke: #d97706; stroke-width: 2.5; fill: none; }\n    .bulb-glow { fill: #fef08a; opacity: 0.6; }\n    .voltmeter-line { stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 4,4; fill: none; }\n    \n    @keyframes flow {\n      0% { stroke-dashoffset: 60; }\n      100% { stroke-dashoffset: 0; }\n    }\n    \n    @keyframes pulse-glow {\n      0%, 100% { opacity: 0.3; transform: scale(0.98); }\n      50% { opacity: 0.8; transform: scale(1.02); }\n    }\n\n    .flow-line {\n      stroke: #38bdf8;\n      stroke-width: 4;\n      fill: none;\n      stroke-dasharray: 8, 12;\n      animation: flow 2s linear infinite;\n    }\n  ]]></style>\n\n  <!-- Background -->\n  <rect width=\"600\" height=\"400\" class=\"bg\" />\n\n  <!-- Diagram Title -->\n  <text x=\"300\" y=\"35\" text-anchor=\"middle\" class=\"title-text\">Series Circuit: Single Loop Physics</text>\n\n  <!-- Circuit Wire Loop (Rectangular: Left 100, Top 80, Right 500, Bottom 260) -->\n  <path d=\"M 270 80 L 100 80 L 100 260 L 220 260 M 260 260 L 380 260 M 420 260 L 500 260 L 500 80 L 330 80\" class=\"wire\" />\n\n  <!-- Animated Current Flow Lines -->\n  <path d=\"M 330 80 L 100 80 L 100 260 L 220 260 M 260 260 L 380 260 M 420 260 L 500 260 L 500 80 L 270 80\" class=\"flow-line\" />\n\n  <!-- Cell Symbol (Top Center) -->\n  <g id=\"cell-component\">\n    <!-- Positive long line -->\n    <line x1=\"270\" y1=\"65\" x2=\"270\" y2=\"95\" class=\"cell-line\" />\n    <!-- Negative short thick line -->\n    <line x1=\"330\" y1=\"72\" x2=\"330\" y2=\"88\" class=\"cell-line\" stroke-width=\"7\" />\n    <!-- Cell Label -->\n    <text x=\"300\" y=\"55\" text-anchor=\"middle\" class=\"label-text\">cell</text>\n    <text x=\"300\" y=\"110\" text-anchor=\"middle\" class=\"sub-text\">(12V Total)</text>\n    <!-- Plus/Minus indicators -->\n    <text x=\"255\" y=\"75\" text-anchor=\"middle\" class=\"sub-text\" font-weight=\"bold\">+</text>\n    <text x=\"345\" y=\"75\" text-anchor=\"middle\" class=\"sub-text\" font-weight=\"bold\">-</text>\n  </g>\n\n  <!-- Bulb 1 (Bottom Left) -->\n  <g id=\"bulb1\">\n    <circle cx=\"240\" cy=\"260\" r=\"18\" fill=\"#ffffff\" stroke=\"#0f172a\" stroke-width=\"3\" />\n    <path d=\"M 227 273 L 253 247 M 227 247 L 253 273\" class=\"filament\" />\n    <circle cx=\"240\" cy=\"260\" r=\"22\" class=\"bulb-glow\" />\n  </g>\n\n  <!-- Bulb 2 (Bottom Right) -->\n  <g id=\"bulb2\">\n    <circle cx=\"400\" cy=\"260\" r=\"18\" fill=\"#ffffff\" stroke=\"#0f172a\" stroke-width=\"3\" />\n    <path d=\"M 387 273 L 413 247 M 387 247 L 413 273\" class=\"filament\" />\n    <circle cx=\"400\" cy=\"260\" r=\"22\" class=\"bulb-glow\" />\n  </g>\n\n  <!-- Voltage Indicator / Label (Bottom Center - Voltage Shared) -->\n  <g id=\"voltage-group\">\n    <!-- Voltmeter connections for Bulb 1 -->\n    <path d=\"M 220 260 L 220 310 L 260 310 L 260 260\" class=\"voltmeter-line\" />\n    <rect x=\"225\" y=\"300\" width=\"30\" height=\"20\" rx=\"3\" fill=\"#ffffff\" stroke=\"#64748b\" stroke-width=\"1.5\" />\n    <text x=\"240\" y=\"315\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"11\" font-weight=\"bold\" fill=\"#0284c7\">6V</text>\n\n    <!-- Voltmeter connections for Bulb 2 -->\n    <path d=\"M 380 260 L 380 310 L 420 310 L 420 260\" class=\"voltmeter-line\" />\n    <rect x=\"385\" y=\"300\" width=\"30\" height=\"20\" rx=\"3\" fill=\"#ffffff\" stroke=\"#64748b\" stroke-width=\"1.5\" />\n    <text x=\"400\" y=\"315\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"11\" font-weight=\"bold\" fill=\"#0284c7\">6V</text>\n\n    <!-- Main Voltage Label -->\n    <text x=\"320\" y=\"320\" text-anchor=\"middle\" class=\"label-text\">voltage</text>\n    <text x=\"320\" y=\"338\" text-anchor=\"middle\" class=\"sub-text\">is shared (6V + 6V = 12V)</text>\n  </g>\n\n  <!-- Current Label & Explanation (Right Side) -->\n  <g id=\"current-group\">\n    <text x=\"515\" y=\"170\" text-anchor=\"start\" class=\"label-text\">current</text>\n    <text x=\"515\" y=\"190\" text-anchor=\"start\" class=\"sub-text\">is the same</text>\n    <text x=\"515\" y=\"208\" text-anchor=\"start\" class=\"sub-text\">everywhere</text>\n    <!-- Arrow indicating current flow direction -->\n    <path d=\"M 500 180 L 500 140\" stroke=\"#0284c7\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />\n  </g>\n\n  <!-- Key Concept Summary Box (Bottom Left/Center inside 20px margins) -->\n  <rect x=\"40\" y=\"350\" width=\"520\" height=\"35\" rx=\"6\" fill=\"#f8fafc\" stroke=\"#e2e8f0\" stroke-width=\"1\" />\n  <text x=\"300\" y=\"372\" text-anchor=\"middle\" class=\"sub-text\" font-weight=\"600\">\n    Key Rule: 1 Loop &amp;bull; Current Same Everywhere &amp;bull; Cell Voltage Shared\n  </text>\n</svg>",
     "checks": {
       "valid": {
         "passed": true,
@@ -100,7 +108,7 @@
       },
       "title_and_labels": {
         "passed": true,
-        "reason": "Title present, 16 text labels"
+        "reason": "Title present, 13 text labels"
       },
       "animation": {
         "passed": true,
@@ -109,20 +117,25 @@
       "key_terms": {
         "passed": true,
         "reason": "All key terms labelled: cell, current, voltage"
+      },
+      "no_overlap": {
+        "passed": true,
+        "reason": "No overlapping labels (13 checked)"
       }
     },
     "passed": true,
-    "input_tokens": 262,
-    "output_tokens": 2410,
-    "cost_usd": 0.006104,
+    "input_tokens": 304,
+    "output_tokens": 2212,
+    "cost_usd": 0.005621,
     "retries": 0,
-    "api_retries": 3,
+    "api_retries": 4,
     "log": [
       "gemini-3.5-flash-lite: API 503 on attempt 1, waiting 5s",
       "gemini-3.5-flash-lite: API 503 on attempt 2, waiting 10s",
-      "gemini-3.5-flash-lite: API 503 3 times, giving up on this model"
+      "gemini-3.5-flash-lite: API 503 3 times, giving up on this model",
+      "gemini-3.5-flash: API 504 on attempt 1, waiting 5s"
     ],
-    "generated_at": "2026-11-23T17:20:57+00:00"
+    "generated_at": "2026-11-23T17:55:57+00:00"
   },
   {
     "id": 4,
@@ -150,6 +163,10 @@
       "key_terms": {
         "passed": true,
         "reason": "All key terms labelled: carbon dioxide, water, light, chlorophyll, glucose, oxygen"
+      },
+      "no_overlap": {
+        "passed": true,
+        "reason": "No overlapping labels (8 checked)"
       }
     },
     "passed": true,
@@ -190,6 +207,10 @@
       "key_terms": {
         "passed": true,
         "reason": "All key terms labelled: solid, liquid, gas"
+      },
+      "no_overlap": {
+        "passed": true,
+        "reason": "No overlapping labels (11 checked)"
       }
     },
     "passed": true,

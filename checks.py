@@ -201,7 +201,93 @@ def check_key_terms(root, key_terms: list[str]):
     return True, f"All key terms labelled: {', '.join(key_terms)}"
 
 
-CHECK_NAMES = ["valid", "in_viewbox", "title_and_labels", "animation", "key_terms"]
+# ---------- Check 6 (my own): text labels don't overlap each other ----------
+CHAR_WIDTH = 0.55     # average glyph width as a fraction of font-size (sans-serif)
+OVERLAP_LIMIT = 0.15  # fail if two labels share more than 15% of the smaller box
+
+
+def css_rules(root) -> dict:
+    """Very small CSS reader: {'.label': {'font-size': '14px', ...}, 'text': {...}}"""
+    css = " ".join("".join(el.itertext()) for el in root.iter() if local(el.tag) == "style")
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)  # drop comments
+    rules = {}
+    for selectors, body in re.findall(r"([^{}@]+)\{([^{}]*)\}", css):
+        props = dict(
+            (k.strip().lower(), v.strip())
+            for k, v in (p.split(":", 1) for p in body.split(";") if ":" in p)
+        )
+        for sel in selectors.split(","):
+            rules.setdefault(sel.strip(), {}).update(props)
+    return rules
+
+
+def text_style(el, rules, inherited: dict) -> dict:
+    """font-size and text-anchor from: parent <g>, CSS (tag, then class), attribute, style=."""
+    style = dict(inherited)
+    style.update(rules.get(local(el.tag), {}))
+    for cls in el.get("class", "").split():
+        style.update(rules.get("." + cls, {}))
+    for k in ("font-size", "text-anchor"):
+        if el.get(k):
+            style[k] = el.get(k)
+    for part in el.get("style", "").split(";"):
+        if ":" in part:
+            k, v = part.split(":", 1)
+            style[k.strip().lower()] = v.strip()
+    return {k: style[k] for k in ("font-size", "text-anchor") if k in style}
+
+
+def text_boxes(root):
+    """Estimated (x1, y1, x2, y2, label) for every <text>, in viewBox coordinates."""
+    rules = css_rules(root)
+    boxes = []
+
+    def walk(el, m, inherited):
+        if local(el.tag) in SKIP:
+            return
+        m = mat_mul(m, parse_transform(el.get("transform", "")))
+        style = text_style(el, rules, inherited)
+        if local(el.tag) == "text":
+            label = " ".join("".join(el.itertext()).split())
+            if label:
+                size = (nums(style.get("font-size", "16")) or [16])[0]
+                x = (nums(el.get("x", "0")) or [0])[0]
+                y = (nums(el.get("y", "0")) or [0])[0]
+                w = len(label) * size * CHAR_WIDTH
+                anchor = style.get("text-anchor", "start")
+                x1 = x - w / 2 if anchor == "middle" else x - w if anchor == "end" else x
+                # y is the baseline; letters sit roughly 0.8em above it
+                pts = [apply(m, px, py) for px, py in
+                       [(x1, y - size * 0.8), (x1 + w, y - size * 0.8), (x1, y + size * 0.2), (x1 + w, y + size * 0.2)]]
+                xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+                boxes.append((min(xs), min(ys), max(xs), max(ys), label))
+            return  # don't descend into tspans separately
+        for child in el:
+            walk(child, m, style)
+
+    walk(root, IDENTITY, {})
+    return boxes
+
+
+def check_no_overlap(root):
+    boxes = text_boxes(root)
+    clashes = []
+    for i in range(len(boxes)):
+        for j in range(i + 1, len(boxes)):
+            a, b = boxes[i], boxes[j]
+            ix = min(a[2], b[2]) - max(a[0], b[0])
+            iy = min(a[3], b[3]) - max(a[1], b[1])
+            if ix <= 0 or iy <= 0:
+                continue
+            smaller = min((a[2] - a[0]) * (a[3] - a[1]), (b[2] - b[0]) * (b[3] - b[1]))
+            if smaller and ix * iy / smaller > OVERLAP_LIMIT:
+                clashes.append(f"'{a[4][:30]}' overlaps '{b[4][:30]}'")
+    if clashes:
+        return False, "Text labels overlap: " + "; ".join(clashes[:4])
+    return True, f"No overlapping labels ({len(boxes)} checked)"
+
+
+CHECK_NAMES = ["valid", "in_viewbox", "title_and_labels", "animation", "key_terms", "no_overlap"]
 
 
 def run_checks(svg: str, key_terms: list[str]) -> dict:
@@ -217,6 +303,7 @@ def run_checks(svg: str, key_terms: list[str]) -> dict:
         ("title_and_labels", check_title_and_labels(root)),
         ("animation", check_animation(root)),
         ("key_terms", check_key_terms(root, key_terms)),
+        ("no_overlap", check_no_overlap(root)),
     ]:
         results[name] = {"passed": passed, "reason": why}
     return results

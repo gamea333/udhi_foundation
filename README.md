@@ -35,6 +35,7 @@ uvicorn app:app --reload      # Part B: open http://localhost:8000
 3. **Title + 3 labels**: a non-empty `<title>` and at least 3 non-empty `<text>` elements.
 4. **Animation**: SMIL (`animate`, `animateTransform`, `animateMotion`, `set`) or CSS `@keyframes` used by an `animation` property.
 5. **Key terms (my own check)**: every key science term for the concept (e.g. *hypotenuse, radius, chlorophyll*) appears as a label. A diagram can pass checks 1–4 and still teach nothing, so this checks the content.
+6. **No label overlap (my own, added after reviewing)**: estimates each `<text>` box from font-size (attribute, inline style, or CSS class rule), text length and `text-anchor`, applies transforms, and fails if two labels share more than 15% of the smaller box. I added it after seeing the series circuit's "cell" label printed on top of its subtitle while every other check passed. It is an estimate: glyph width is taken as 0.55 × font-size.
 
 **Known limits (honest):** the viewBox check skips paths with relative or arc commands, ignores the width of text (only the anchor point is checked), and ignores CSS animation movement (only the resting position is checked). It can miss overflow; it shouldn't give false failures.
 
