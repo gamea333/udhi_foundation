@@ -1,0 +1,16 @@
+
+=== 1. Pythagoras' theorem ===
+  Checks failed, retrying:
+  - in_viewbox: Drawn outside viewBox 0 0 600 400: <rect> has point (100, 460); <rect> has point (-40, 140); <polygon> has point (240, -40)
+  gemini-3.5-flash-lite: API 503 on attempt 1, waiting 5s
+  gemini-3.5-flash-lite: API 503 on attempt 2, waiting 10s
+  gemini-3.5-flash-lite: API 503 3 times, giving up on this model
+  gemini-3.5-flash: API 503 on attempt 1, waiting 5s
+  model=gemini-3.5-flash  in=2215  out=3181  cost=$0.005461  retries=1  api_retries=4
+  [PASS] valid: Parsed OK
+  [PASS] in_viewbox: All checked shapes inside viewBox 0 0 600 400
+  [PASS] title_and_labels: Title present, 12 text labels
+  [PASS] animation: Animation found (CSS)
+  [PASS] key_terms: All key terms labelled: hypotenuse, a, b, c
+
+Saved 5 results to results.json

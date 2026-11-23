@@ -4,6 +4,7 @@ Each check returns (passed: bool, reason: str). The reason is shown on the
 web page and sent back to the model on a retry, so it should say exactly what
 is wrong.
 """
+import math
 import re
 import xml.etree.ElementTree as ET
 
@@ -73,6 +74,62 @@ def points_of(el) -> list[tuple[float, float]]:
     return []
 
 
+# --- transforms: a 2D affine matrix (a, b, c, d, e, f) maps (x, y) to
+#     (a*x + c*y + e,  b*x + d*y + f), the same as SVG's matrix().
+IDENTITY = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+
+
+def mat_mul(m, n):
+    """Matrix for 'apply n first, then m'."""
+    a, b, c, d, e, f = m
+    A, B, C, D, E, F = n
+    return (a * A + c * B, b * A + d * B,
+            a * C + c * D, b * C + d * D,
+            a * E + c * F + e, b * E + d * F + f)
+
+
+def apply(m, x, y):
+    a, b, c, d, e, f = m
+    return a * x + c * y + e, b * x + d * y + f
+
+
+def parse_transform(s: str):
+    """Turn 'translate(210,150) rotate(-36.87)' into one matrix."""
+    m = IDENTITY
+    for name, args in re.findall(r"(\w+)\s*\(([^)]*)\)", s or ""):
+        v = nums(args)
+        if name == "translate" and v:
+            t = (1, 0, 0, 1, v[0], v[1] if len(v) > 1 else 0)
+        elif name == "scale" and v:
+            t = (v[0], 0, 0, v[1] if len(v) > 1 else v[0], 0, 0)
+        elif name == "rotate" and v:
+            r = math.radians(v[0])
+            t = (math.cos(r), math.sin(r), -math.sin(r), math.cos(r), 0, 0)
+            if len(v) == 3:  # rotate(angle, cx, cy) = translate, rotate, translate back
+                t = mat_mul(mat_mul((1, 0, 0, 1, v[1], v[2]), t), (1, 0, 0, 1, -v[1], -v[2]))
+        elif name == "matrix" and len(v) == 6:
+            t = tuple(v)
+        elif name == "skewX" and v:
+            t = (1, 0, math.tan(math.radians(v[0])), 1, 0, 0)
+        elif name == "skewY" and v:
+            t = (1, math.tan(math.radians(v[0])), 0, 1, 0, 0)
+        else:
+            continue
+        m = mat_mul(m, t)  # SVG applies the list right-to-left
+    return m
+
+
+def corners(pts):
+    """For boxes (rect/circle/ellipse) use all 4 corners so rotation is handled."""
+    if len(pts) == 2:
+        (x1, y1), (x2, y2) = pts
+        return [(x1, y1), (x2, y1), (x1, y2), (x2, y2)]
+    return pts
+
+
+SKIP = ("defs", "clipPath", "mask", "marker", "pattern", "symbol")
+
+
 def check_in_viewbox(root):
     vb = nums(root.get("viewBox", ""))
     if len(vb) != 4:
@@ -81,22 +138,24 @@ def check_in_viewbox(root):
     maxx, maxy = minx + w, miny + h
     problems = []
 
-    def walk(el, transformed: bool):
-        # Coordinates inside a transform are not in viewBox space; skip them
-        # rather than give a false failure.
-        transformed = transformed or "transform" in el.attrib
-        if not transformed and local(el.tag) not in ("defs", "clipPath", "mask", "marker", "pattern"):
-            for x, y in points_of(el):
-                if not (minx - TOLERANCE <= x <= maxx + TOLERANCE and
-                        miny - TOLERANCE <= y <= maxy + TOLERANCE):
-                    problems.append(f"<{local(el.tag)}> has point ({x:g}, {y:g})")
-                    break
-        if local(el.tag) in ("defs", "clipPath", "mask", "marker", "pattern"):
+    def walk(el, m):
+        if local(el.tag) in SKIP:
             return
+        # combine this element's transform with all its parents' transforms
+        m = mat_mul(m, parse_transform(el.get("transform", "")))
+        pts = points_of(el)
+        if local(el.tag) in ("rect", "circle", "ellipse"):
+            pts = corners(pts)
+        for x, y in pts:
+            X, Y = apply(m, x, y)
+            if not (minx - TOLERANCE <= X <= maxx + TOLERANCE and
+                    miny - TOLERANCE <= Y <= maxy + TOLERANCE):
+                problems.append(f"<{local(el.tag)}> has point ({X:.0f}, {Y:.0f})")
+                break
         for child in el:
-            walk(child, transformed)
+            walk(child, m)
 
-    walk(root, False)
+    walk(root, IDENTITY)
     if problems:
         return False, (f"Drawn outside viewBox {minx:g} {miny:g} {w:g} {h:g}: "
                        + "; ".join(problems[:5]))

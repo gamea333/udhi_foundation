@@ -31,12 +31,14 @@ uvicorn app:app --reload      # Part B: open http://localhost:8000
 
 ### Checks
 1. **Valid**: parses as XML and the root is `<svg>`.
-2. **Inside viewBox**: reads coordinates of rect, circle, ellipse, line, text, polygon, polyline and absolute paths, and fails if any point is outside the viewBox (1 unit tolerance).
+2. **Inside viewBox**: reads coordinates of rect, circle, ellipse, line, text, polygon, polyline and absolute paths, applies every `transform` (translate, rotate, scale, matrix, skew, including nested groups) and fails if any resulting point is outside the viewBox (1 unit tolerance).
 3. **Title + 3 labels**: a non-empty `<title>` and at least 3 non-empty `<text>` elements.
 4. **Animation**: SMIL (`animate`, `animateTransform`, `animateMotion`, `set`) or CSS `@keyframes` used by an `animation` property.
 5. **Key terms (my own check)**: every key science term for the concept (e.g. *hypotenuse, radius, chlorophyll*) appears as a label. A diagram can pass checks 1–4 and still teach nothing, so this checks the content.
 
-**Known limits (honest):** the viewBox check ignores elements under a `transform`, relative or arc path commands, and the width of text (it only checks the text anchor point). It can miss overflow; it shouldn't give false failures.
+**Known limits (honest):** the viewBox check skips paths with relative or arc commands, ignores the width of text (only the anchor point is checked), and ignores CSS animation movement (only the resting position is checked). It can miss overflow; it shouldn't give false failures.
+
+**Why transforms matter:** the first version skipped anything inside a `transform`. Gemini drew the Pythagoras c² square inside `rotate(-36.87)`, which is the wrong sign (the hypotenuse is at +36.87°), so the square pointed off the top of the canvas to y = -60. It passed every check but looked broken on the page. After adding transform maths, the check caught it, and the retry produced a correct diagram.
 
 ### Cost
 The free tier costs $0. `cost_usd` is an **estimate at Gemini's paid list price**
