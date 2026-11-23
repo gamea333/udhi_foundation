@@ -1,7 +1,8 @@
 """Run Part A for all 5 concepts and save results.json.
 
-Usage:  python generate.py          (all concepts)
-        python generate.py 3        (just concept 3, merged into results.json)
+Usage:  python generate.py            (all concepts)
+        python generate.py 3          (just concept 3, merged into results.json)
+        python generate.py --recheck  (re-run checks on saved SVGs, no API call)
 """
 import json
 import sys
@@ -11,13 +12,29 @@ from dotenv import load_dotenv
 
 load_dotenv()  # reads .env locally; on the host the env var is set directly
 
+from checks import all_passed, run_checks  # noqa: E402
 from concepts import CONCEPTS, get_concept  # noqa: E402
 from pipeline import GenerationError, generate_one, get_client  # noqa: E402
 
 RESULTS = Path(__file__).parent / "results.json"
 
 
+def recheck():
+    """Used after adding a new check, so saved results show it without new API calls."""
+    results = json.loads(RESULTS.read_text())
+    for r in results:
+        r["checks"] = run_checks(r["svg"], get_concept(r["id"])["key_terms"])
+        r["passed"] = all_passed(r["checks"])
+        print(f"{r['id']}. {r['concept']}: {'PASS' if r['passed'] else 'FAIL'}")
+        for name, c in r["checks"].items():
+            if not c["passed"]:
+                print(f"   [FAIL] {name}: {c['reason']}")
+    RESULTS.write_text(json.dumps(results, indent=2, ensure_ascii=False))
+
+
 def main():
+    if "--recheck" in sys.argv:
+        return recheck()
     ids = [int(a) for a in sys.argv[1:]] or [c["id"] for c in CONCEPTS]
     existing = {r["id"]: r for r in json.loads(RESULTS.read_text())} if RESULTS.exists() else {}
     client = get_client()

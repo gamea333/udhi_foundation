@@ -22,7 +22,7 @@ PRICES = {
 }
 
 MAX_API_ATTEMPTS = 3          # attempts per model on 429/503
-RETRYABLE_CODES = {429, 503}
+RETRYABLE_CODES = {429, 503, 504}  # 504 = Google-side deadline expired, also transient
 REQUEST_TIMEOUT_MS = 180_000  # don't let one call hang forever
 
 # Low thinking: with default thinking gemini-3.5-flash took ~212s per diagram,
@@ -99,7 +99,7 @@ def call_model(client, prompt: str, log: list) -> dict:
                     time.sleep(wait)
                 else:
                     log.append(f"{model}: API {e.code} {MAX_API_ATTEMPTS} times, giving up on this model")
-    reason = "rate limit" if last_code == 429 else "overloaded"
+    reason = {429: "rate limit", 503: "overloaded", 504: "timed out"}.get(last_code, "error")
     raise GenerationError(
         f"Gemini returned {last_code} ({reason}) on every model ({', '.join(MODELS)}). "
         "Free-tier limits are low; try again in a minute."
