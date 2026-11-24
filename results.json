@@ -34,7 +34,7 @@
     "passed": true,
     "input_tokens": 2215,
     "output_tokens": 3181,
-    "cost_usd": 0.005461,
+    "cost_usd": 0.031952,
     "retries": 1,
     "api_retries": 4,
     "log": [
@@ -81,7 +81,7 @@
     "passed": true,
     "input_tokens": 277,
     "output_tokens": 1887,
-    "cost_usd": 0.004801,
+    "cost_usd": 0.017399,
     "retries": 0,
     "api_retries": 3,
     "log": [
@@ -126,7 +126,7 @@
     "passed": true,
     "input_tokens": 304,
     "output_tokens": 2212,
-    "cost_usd": 0.005621,
+    "cost_usd": 0.020364,
     "retries": 0,
     "api_retries": 4,
     "log": [
@@ -172,7 +172,7 @@
     "passed": true,
     "input_tokens": 261,
     "output_tokens": 2104,
-    "cost_usd": 0.000868,
+    "cost_usd": 0.005338,
     "retries": 0,
     "api_retries": 2,
     "log": [
@@ -216,7 +216,7 @@
     "passed": true,
     "input_tokens": 268,
     "output_tokens": 3744,
-    "cost_usd": 0.00944,
+    "cost_usd": 0.034098,
     "retries": 0,
     "api_retries": 3,
     "log": [

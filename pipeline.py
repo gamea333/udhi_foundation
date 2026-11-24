@@ -14,11 +14,13 @@ from checks import all_passed, run_checks
 PRIMARY = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
 MODELS = [PRIMARY] + [m for m in ["gemini-3.5-flash-lite", "gemini-3.5-flash"] if m != PRIMARY]
 
-# The free tier costs $0. These are PAID list prices (USD per 1M tokens) used
-# to estimate production cost. Verify at https://ai.google.dev/gemini-api/docs/pricing
+# The free tier costs $0. These are PAID standard-tier prices (USD per 1M tokens)
+# used to estimate production cost, as of Nov 2026. Flash-Lite matches several
+# sources; Flash is from third-party write-ups, not confirmed on Google's page.
+# https://ai.google.dev/gemini-api/docs/pricing
 PRICES = {
-    "gemini-3.5-flash-lite": {"input": 0.10, "output": 0.40},
-    "gemini-3.5-flash": {"input": 0.30, "output": 2.50},
+    "gemini-3.5-flash-lite": {"input": 0.30, "output": 2.50},
+    "gemini-3.5-flash": {"input": 1.50, "output": 9.00},
 }
 
 MAX_API_ATTEMPTS = 3          # attempts per model on 429/503
