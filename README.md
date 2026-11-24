@@ -4,7 +4,8 @@ Asks Gemini to draw 5 animated GCSE science diagrams as SVG, checks each one in 
 retries once with the failure reasons, and shows them on a page where a reviewer can
 approve or reject them.
 
-**Live app:** TODO
+**Live app:** https://science-diagram-maker-jf6k.onrender.com  
+(Render free tier: the first load after ~15 min idle can take ~50 s while the server wakes up.)
 **Model:** `gemini-3.5-flash-lite` (free tier)
 
 ## How to run it locally
@@ -53,15 +54,14 @@ between reviewers.
 
 ## Results
 
-TODO: fill in after running `generate.py`.
-
-| Concept | Pass/Fail | Cost (USD) | Retries |
-|---|---|---|---|
-| Pythagoras' theorem | | | |
-| Parts of a circle | | | |
-| Series circuit | | | |
-| Photosynthesis | | | |
-| States of matter | | | |
+| Concept | Pass/Fail (checks) | Model | Est. cost (USD) | Check retries | API retries (429/503/504) |
+|---|---|---|---|---|---|
+| Pythagoras' theorem | ✅ Pass (6/6) | gemini-3.5-flash | $0.005461 | 1 | 4 |
+| Parts of a circle | ✅ Pass (6/6) | gemini-3.5-flash | $0.004801 | 0 | 3 |
+| Series circuit | ✅ Pass (6/6) | gemini-3.5-flash | $0.005621 | 0 | 4 |
+| Photosynthesis | ✅ Pass (6/6) | gemini-3.5-flash-lite | $0.000868 | 0 | 2 |
+| States of matter | ✅ Pass (6/6) | gemini-3.5-flash | $0.009440 | 0 | 3 |
+| **Total** | | | **$0.026191** | | |
 
 ## What failed and how I fixed it
 TODO: keep real notes as you go.
