@@ -10,6 +10,15 @@ approve or reject them.
 **Models:** `gemini-3.5-flash-lite` first, falling back to `gemini-3.5-flash` when Flash-Lite
 is overloaded (both free tier). See "What failed" for why.
 
+## Live link
+
+🔗 **https://science-diagram-maker-jf6k.onrender.com**
+
+- Opens in any browser, nothing to install.
+- The 5 saved diagrams load straight away, with no API call.
+- **Generate** runs the pipeline live for one concept (takes 1–3 minutes because of Gemini free-tier limits).
+- Hosted on Render's free tier: if nobody has opened it for ~15 minutes, the first load can take ~50 seconds while the server wakes up.
+
 ## How to run it locally
 
 ```bash
